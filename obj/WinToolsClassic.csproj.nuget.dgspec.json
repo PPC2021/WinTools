@@ -10,7 +10,7 @@
         "projectUniqueName": "/home/runner/work/WinTools/WinTools/WinToolsClassic.csproj",
         "projectName": "WinTools",
         "projectPath": "/home/runner/work/WinTools/WinTools/WinToolsClassic.csproj",
-        "packagesPath": "/home/runner/.nuget/packages/",
+        "packagesPath": "/tmp/codeql-scratch-91fb1fc64ea4da76/dbs/csharp/working/packages",
         "outputPath": "/home/runner/work/WinTools/WinTools/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
