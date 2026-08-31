@@ -99,7 +99,7 @@ public class Form1 : Form
 		{
 			components.Dispose();
 		}
-		((Form)this).Dispose(disposing);
+		base.Dispose(disposing);
 	}
 
 	private void InitializeComponent()
