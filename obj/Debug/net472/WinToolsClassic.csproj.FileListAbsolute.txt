@@ -1,0 +1,7 @@
+/home/runner/work/WinTools/WinTools/obj/Debug/net472/WinToolsClassic.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/WinTools/WinTools/obj/Debug/net472/WinToolsClassic.csproj.CoreCompileInputs.cache
+/home/runner/work/WinTools/WinTools/bin/Debug/net472/WinTools.exe.config
+/home/runner/work/WinTools/WinTools/bin/Debug/net472/WinTools.exe
+/home/runner/work/WinTools/WinTools/bin/Debug/net472/WinTools.pdb
+/home/runner/work/WinTools/WinTools/obj/Debug/net472/WinTools.exe
+/home/runner/work/WinTools/WinTools/obj/Debug/net472/WinTools.pdb

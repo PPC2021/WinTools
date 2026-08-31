@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "GJJPgVTAyo8=",
+  "success": true,
+  "projectFilePath": "/home/runner/work/WinTools/WinTools/WinToolsClassic.csproj",
+  "expectedPackageFiles": [
+    "/tmp/codeql-scratch-91fb1fc64ea4da76/dbs/csharp/working/packages/microsoft.netframework.referenceassemblies/1.0.3/microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "/tmp/codeql-scratch-91fb1fc64ea4da76/dbs/csharp/working/packages/microsoft.netframework.referenceassemblies.net472/1.0.3/microsoft.netframework.referenceassemblies.net472.1.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
