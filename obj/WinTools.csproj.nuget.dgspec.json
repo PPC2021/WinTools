@@ -1,16 +1,16 @@
 {
   "format": 1,
   "restore": {
-    "/home/runner/work/WinTools/WinTools/WinToolsClassic.csproj": {}
+    "/home/runner/work/WinTools/WinTools/WinTools.csproj": {}
   },
   "projects": {
-    "/home/runner/work/WinTools/WinTools/WinToolsClassic.csproj": {
+    "/home/runner/work/WinTools/WinTools/WinTools.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/WinTools/WinTools/WinToolsClassic.csproj",
+        "projectUniqueName": "/home/runner/work/WinTools/WinTools/WinTools.csproj",
         "projectName": "WinTools",
-        "projectPath": "/home/runner/work/WinTools/WinTools/WinToolsClassic.csproj",
-        "packagesPath": "/tmp/codeql-scratch-91fb1fc64ea4da76/dbs/csharp/working/packages",
+        "projectPath": "/home/runner/work/WinTools/WinTools/WinTools.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
         "outputPath": "/home/runner/work/WinTools/WinTools/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -54,6 +54,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.400/RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x86": {
+          "#import": []
         }
       }
     }
