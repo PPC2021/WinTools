@@ -45,6 +45,14 @@ public class Form1 : Form
 
 	private Label scheduleSummaryLabel;
 
+	private NumericUpDown breakMinutesUpDown;
+
+	private Label breakMinutesLabel;
+
+	private Button takeBreakButton;
+
+	private long breakUntilTicks;
+
 	public Form1()
 	{
 		InitializeComponent();
@@ -121,6 +129,24 @@ public class Form1 : Form
 		}
 	}
 
+	private void takeBreakButton_Click(object sender, EventArgs e)
+	{
+		int num = (int)breakMinutesUpDown.Value;
+		if (num <= 0)
+		{
+			return;
+		}
+		DateTime dateTime = DateTime.Now.AddMinutes(num);
+		Interlocked.Exchange(ref breakUntilTicks, dateTime.Ticks);
+		if (keepAliveActive)
+		{
+			PowerUtilities.Shutdown();
+			keepAliveActive = false;
+		}
+		UpdateLabel(Status_label, "Status: Break started");
+		UpdateLabel(IdleTime_label, "Idle Time: Break until " + dateTime.ToString("HH:mm"));
+	}
+
 	private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 	{
 		PowerUtilities.Shutdown("test");
@@ -139,8 +165,11 @@ public class Form1 : Form
 		{
 			WorkingHoursSchedule workingHoursSchedule = currentSchedule;
 			DateTime now = DateTime.Now;
-			bool flag = Run && workingHoursSchedule.IsActive(now);
-			if (flag)
+			long num = Interlocked.Read(ref breakUntilTicks);
+			DateTime dateTime = ((num > 0) ? new DateTime(num) : DateTime.MinValue);
+			bool flag = Run && now < dateTime;
+			bool flag2 = Run && !flag && workingHoursSchedule.IsActive(now);
+			if (flag2)
 			{
 				if (!keepAliveActive)
 				{
@@ -163,8 +192,16 @@ public class Form1 : Form
 					PowerUtilities.Shutdown();
 					keepAliveActive = false;
 				}
-				UpdateLabel(Status_label, Run ? (workingHoursSchedule.Enabled ? "Status: Waiting for working hours" : "Status: Schedule disabled") : "Status: Stopped");
-				UpdateLabel(IdleTime_label, Run ? (workingHoursSchedule.Enabled ? "Idle Time: Outside working hours" : "Idle Time: Schedule disabled") : "Idle Time: ");
+				if (flag)
+				{
+					UpdateLabel(Status_label, "Status: On break until " + dateTime.ToString("HH:mm"));
+					UpdateLabel(IdleTime_label, "Idle Time: Break active");
+				}
+				else
+				{
+					UpdateLabel(Status_label, Run ? (workingHoursSchedule.Enabled ? "Status: Waiting for working hours" : "Status: Schedule disabled") : "Status: Stopped");
+					UpdateLabel(IdleTime_label, Run ? (workingHoursSchedule.Enabled ? "Idle Time: Outside working hours" : "Idle Time: Schedule disabled") : "Idle Time: ");
+				}
 			}
 			Thread.Sleep(1000);
 		}
@@ -189,6 +226,9 @@ public class Form1 : Form
 		button1 = new Button();
 		Status_label = new Label();
 		IdleTime_label = new Label();
+		breakMinutesUpDown = new NumericUpDown();
+		breakMinutesLabel = new Label();
+		takeBreakButton = new Button();
 		scheduleGroup = new GroupBox();
 		scheduleEnabledCheckBox = new CheckBox();
 		daysCheckedListBox = new CheckedListBox();
@@ -224,6 +264,26 @@ public class Form1 : Form
 		((Control)IdleTime_label).TabIndex = 2;
 		((Control)IdleTime_label).Text = "Idle Time: ";
 		IdleTime_label.TextAlign = (ContentAlignment)4;
+		((Control)breakMinutesLabel).AutoSize = true;
+		((Control)breakMinutesLabel).Location = new Point(16, 302);
+		((Control)breakMinutesLabel).Name = "breakMinutesLabel";
+		((Control)breakMinutesLabel).Size = new Size(89, 15);
+		((Control)breakMinutesLabel).TabIndex = 4;
+		((Control)breakMinutesLabel).Text = "Break minutes:";
+		((Control)breakMinutesUpDown).Location = new Point(112, 300);
+		((Control)breakMinutesUpDown).Name = "breakMinutesUpDown";
+		breakMinutesUpDown.Minimum = 1m;
+		breakMinutesUpDown.Maximum = 240m;
+		breakMinutesUpDown.Value = 15m;
+		((Control)breakMinutesUpDown).Size = new Size(72, 23);
+		((Control)breakMinutesUpDown).TabIndex = 5;
+		((Control)takeBreakButton).Location = new Point(200, 298);
+		((Control)takeBreakButton).Name = "takeBreakButton";
+		((Control)takeBreakButton).Size = new Size(120, 28);
+		((Control)takeBreakButton).TabIndex = 6;
+		((Control)takeBreakButton).Text = "Take a Break";
+		((ButtonBase)takeBreakButton).UseVisualStyleBackColor = true;
+		((Control)takeBreakButton).Click += takeBreakButton_Click;
 		((Control)scheduleGroup).Controls.Add((Control)(object)scheduleEnabledCheckBox);
 		((Control)scheduleGroup).Controls.Add((Control)(object)daysCheckedListBox);
 		((Control)scheduleGroup).Controls.Add((Control)(object)startTimePicker);
@@ -329,7 +389,10 @@ public class Form1 : Form
 		((Control)scheduleSummaryLabel).Text = "Schedule: ";
 		((ContainerControl)this).AutoScaleDimensions = new SizeF(7f, 15f);
 		((ContainerControl)this).AutoScaleMode = AutoScaleMode.Font;
-		((Form)this).ClientSize = new Size(552, 288);
+		((Form)this).ClientSize = new Size(552, 340);
+		((Control)this).Controls.Add((Control)(object)takeBreakButton);
+		((Control)this).Controls.Add((Control)(object)breakMinutesUpDown);
+		((Control)this).Controls.Add((Control)(object)breakMinutesLabel);
 		((Control)this).Controls.Add((Control)(object)scheduleGroup);
 		((Control)this).Controls.Add((Control)(object)IdleTime_label);
 		((Control)this).Controls.Add((Control)(object)Status_label);
