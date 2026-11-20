@@ -17,6 +17,8 @@ public class Form1 : Form
 
 	private volatile bool keepAliveActive;
 
+	private volatile bool alwaysActive;
+
 	private DateTime lastKeepAlivePulse = DateTime.MinValue;
 
 	private IContainer components = null;
@@ -50,6 +52,8 @@ public class Form1 : Form
 	private Label breakMinutesLabel;
 
 	private Button takeBreakButton;
+
+	private CheckBox alwaysActiveCheckBox;
 
 	private long breakUntilTicks;
 
@@ -117,6 +121,10 @@ public class Form1 : Form
 	private void button1_Click(object sender, EventArgs e)
 	{
 		Run = !Run;
+		if (!Run && alwaysActiveCheckBox.Checked)
+		{
+			alwaysActiveCheckBox.Checked = false;
+		}
 		if (!Run && keepAliveActive)
 		{
 			PowerUtilities.Shutdown();
@@ -126,6 +134,17 @@ public class Form1 : Form
 		if (!Run)
 		{
 			UpdateLabel(IdleTime_label, "Idle Time: ");
+		}
+	}
+
+	private void alwaysActiveCheckBox_CheckedChanged(object sender, EventArgs e)
+	{
+		alwaysActive = alwaysActiveCheckBox.Checked;
+		((Control)scheduleGroup).Enabled = !alwaysActive;
+		if (alwaysActive && !Run)
+		{
+			Run = true;
+			UpdateLabel(Status_label, "Status: Started");
 		}
 	}
 
@@ -168,7 +187,7 @@ public class Form1 : Form
 			long num = Interlocked.Read(ref breakUntilTicks);
 			DateTime dateTime = ((num > 0) ? new DateTime(num) : DateTime.MinValue);
 			bool flag = Run && now < dateTime;
-			bool flag2 = Run && !flag && workingHoursSchedule.IsActive(now);
+			bool flag2 = Run && !flag && (alwaysActive || workingHoursSchedule.IsActive(now));
 			if (flag2)
 			{
 				if (!keepAliveActive)
@@ -182,7 +201,7 @@ public class Form1 : Form
 					PowerUtilities.PreventPowerSave("test");
 					lastKeepAlivePulse = now;
 				}
-				UpdateLabel(Status_label, "Status: Working hours active");
+				UpdateLabel(Status_label, alwaysActive ? "Status: Always active" : "Status: Working hours active");
 				UpdateLabel(IdleTime_label, "Idle Time: " + FormatIdleTime(IdleTimeFinder.GetIdleTime()));
 			}
 			else
@@ -229,6 +248,7 @@ public class Form1 : Form
 		breakMinutesUpDown = new NumericUpDown();
 		breakMinutesLabel = new Label();
 		takeBreakButton = new Button();
+		alwaysActiveCheckBox = new CheckBox();
 		scheduleGroup = new GroupBox();
 		scheduleEnabledCheckBox = new CheckBox();
 		daysCheckedListBox = new CheckedListBox();
@@ -265,25 +285,33 @@ public class Form1 : Form
 		((Control)IdleTime_label).Text = "Idle Time: ";
 		IdleTime_label.TextAlign = (ContentAlignment)4;
 		((Control)breakMinutesLabel).AutoSize = true;
-		((Control)breakMinutesLabel).Location = new Point(16, 302);
+		((Control)breakMinutesLabel).Location = new Point(16, 336);
 		((Control)breakMinutesLabel).Name = "breakMinutesLabel";
 		((Control)breakMinutesLabel).Size = new Size(89, 15);
 		((Control)breakMinutesLabel).TabIndex = 4;
 		((Control)breakMinutesLabel).Text = "Break minutes:";
-		((Control)breakMinutesUpDown).Location = new Point(112, 300);
+		((Control)breakMinutesUpDown).Location = new Point(112, 334);
 		((Control)breakMinutesUpDown).Name = "breakMinutesUpDown";
 		breakMinutesUpDown.Minimum = 1m;
 		breakMinutesUpDown.Maximum = 240m;
 		breakMinutesUpDown.Value = 15m;
 		((Control)breakMinutesUpDown).Size = new Size(72, 23);
 		((Control)breakMinutesUpDown).TabIndex = 5;
-		((Control)takeBreakButton).Location = new Point(200, 298);
+		((Control)takeBreakButton).Location = new Point(200, 332);
 		((Control)takeBreakButton).Name = "takeBreakButton";
 		((Control)takeBreakButton).Size = new Size(120, 28);
 		((Control)takeBreakButton).TabIndex = 6;
 		((Control)takeBreakButton).Text = "Take a Break";
 		((ButtonBase)takeBreakButton).UseVisualStyleBackColor = true;
 		((Control)takeBreakButton).Click += takeBreakButton_Click;
+		((Control)alwaysActiveCheckBox).AutoSize = true;
+		((Control)alwaysActiveCheckBox).Location = new Point(16, 284);
+		((Control)alwaysActiveCheckBox).Name = "alwaysActiveCheckBox";
+		((Control)alwaysActiveCheckBox).Size = new Size(220, 19);
+		((Control)alwaysActiveCheckBox).TabIndex = 7;
+		((Control)alwaysActiveCheckBox).Text = "Always active (ignore schedule)";
+		((ButtonBase)alwaysActiveCheckBox).UseVisualStyleBackColor = true;
+		alwaysActiveCheckBox.CheckedChanged += alwaysActiveCheckBox_CheckedChanged;
 		((Control)scheduleGroup).Controls.Add((Control)(object)scheduleEnabledCheckBox);
 		((Control)scheduleGroup).Controls.Add((Control)(object)daysCheckedListBox);
 		((Control)scheduleGroup).Controls.Add((Control)(object)startTimePicker);
@@ -389,7 +417,8 @@ public class Form1 : Form
 		((Control)scheduleSummaryLabel).Text = "Schedule: ";
 		((ContainerControl)this).AutoScaleDimensions = new SizeF(7f, 15f);
 		((ContainerControl)this).AutoScaleMode = AutoScaleMode.Font;
-		((Form)this).ClientSize = new Size(552, 340);
+		((Form)this).ClientSize = new Size(552, 374);
+		((Control)this).Controls.Add((Control)(object)alwaysActiveCheckBox);
 		((Control)this).Controls.Add((Control)(object)takeBreakButton);
 		((Control)this).Controls.Add((Control)(object)breakMinutesUpDown);
 		((Control)this).Controls.Add((Control)(object)breakMinutesLabel);
