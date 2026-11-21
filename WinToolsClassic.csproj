@@ -4,9 +4,10 @@
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>True</UseWindowsForms>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
     <Prefer32Bit>True</Prefer32Bit>
+    <ApplicationIcon>WinTools\Resources\WinTools.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <LangVersion>14.0</LangVersion>
