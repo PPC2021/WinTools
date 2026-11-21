@@ -75,6 +75,11 @@ public sealed class WorkingHoursSchedule
 
 	public string Describe()
 	{
+		return Describe(use24Hour: true);
+	}
+
+	public string Describe(bool use24Hour)
+	{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.Append(Enabled ? "Enabled: " : "Disabled: ");
 		if (Days.Count == 0)
@@ -98,9 +103,9 @@ public sealed class WorkingHoursSchedule
 			flag = false;
 		}
 		stringBuilder.Append(" ");
-		stringBuilder.Append(FormatTime(StartTime));
+		stringBuilder.Append(FormatTime(StartTime, use24Hour));
 		stringBuilder.Append(" - ");
-		stringBuilder.Append(FormatTime(EndTime));
+		stringBuilder.Append(FormatTime(EndTime, use24Hour));
 		return stringBuilder.ToString();
 	}
 
@@ -125,8 +130,8 @@ public sealed class WorkingHoursSchedule
 		}
 	}
 
-	private static string FormatTime(TimeSpan time)
+	private static string FormatTime(TimeSpan time, bool use24Hour)
 	{
-		return DateTime.Today.Add(time).ToString("HH:mm");
+		return DateTime.Today.Add(time).ToString(use24Hour ? "HH:mm" : "h:mm tt", System.Globalization.CultureInfo.InvariantCulture);
 	}
 }
